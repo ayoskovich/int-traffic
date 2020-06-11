@@ -1,39 +1,99 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Pls don't make more notebooks than this one...
-
-# In[4]:
+# In[1]:
 
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import re
 from statsmodels.tsa import stattools
+from IPython.display import HTML
+import datetime
 
-traf = pd.read_csv('data/TEST_LOG', sep='\n', header=None, names=['speed'])['speed']
-autocor = stattools.acf(traf, fft=False)
+pd.set_option('max_colwidth', 1000)
+
+def remove_headers(df):
+    """ Remove the records when the ping command starts. """
+    return df[df['a'].apply(lambda x: x[:4] != 'PING')]
+
+
+def clean_time(time):
+    """ Get to the right of time=, replace whitespace. """
+    return float(re.sub('[\s|m|s]', '', time.split('time=')[1]))
+
+def clean_ts(time):
+    """Input is a string, cleaning. 
+    
+    >>> clean_ts('[1591899674.439142]')
+    datetime.datetime(2020, 6, 11, 14, 21, 14, 439142)
+    """
+    return datetime.datetime.fromtimestamp(float(re.sub('[\[\]]', '', time)))
+
+
+def parse_time(df):
+    """ Grab the time of the ping and the amount of time 
+    the ping took"""
+    return (
+        df
+        .assign(tstamp = df.a.apply(lambda x: clean_ts(x[:19])))
+        .assign(lat = df.b.apply(clean_time))
+    )
+
+
+def read_cleaned(n=100):
+    return (
+        pd.read_fwf('~/PING_LOG.txt', header=None, names=['a', 'b']).tail(n)
+            .pipe(remove_headers)
+            .pipe(parse_time)
+            .drop(labels=['a', 'b'], axis=1)
+    )
+
+clean = read_cleaned(1000000)
+autocor = stattools.acf(clean['lat'], fft=False)
+
+clean.set_index('tstamp', inplace=True)
 
 # Doing it this way bc I literally always forget
 WIDTH = 20
 HEIGHT = 5
 fig, axs = plt.subplots(figsize=(WIDTH,HEIGHT), nrows=1,ncols=3)
-fig.suptitle('Internet Traffic: {} pings to google'.format(traf.size))
+fig.suptitle('Internet Traffic: {} pings to google'.format(clean.shape[0]))
 
-axs[0].hist(traf);
+axs[0].hist(clean['lat']);
 axs[0].set_title('All pings');
 
-axs[1].scatter(list(traf.index), traf);
-axs[1].set_xlabel('Index');
-axs[1].set_ylabel('Ping');
+axs[1].plot(clean['lat']);
+axs[1].set_xlabel('Time');
+axs[1].set_ylabel('Latency (ping)');
 axs[1].set_title('Traffic over time')
 
 axs[2].plot(autocor, marker='o')
 axs[2].set_title('Autocorrelation at lag 1: {:.2f}'.format(autocor[1]));
 
 
-# In[ ]:
+# In[2]:
 
 
+WIDTH = 30
+HEIGHT = 5
+fig, axs = plt.subplots(figsize=(WIDTH,HEIGHT), nrows=1, ncols=1)
 
+axs.plot(clean['lat'].rolling(10).median(), marker='o');
+axs.set_xlabel('Index');
+axs.set_ylabel('Latency (ping)');
+axs.set_title('Traffic over time (10 ping median)');
+
+
+# In[3]:
+
+
+WIDTH = 30
+HEIGHT = 5
+fig, axs = plt.subplots(figsize=(WIDTH,HEIGHT), nrows=1, ncols=1)
+
+axs.plot(clean['lat'].rolling(10).mean(), marker='o');
+axs.set_xlabel('Index');
+axs.set_ylabel('Latency (ping)');
+axs.set_title('Traffic over time (10 ping average)');
 
