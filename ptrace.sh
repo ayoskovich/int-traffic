@@ -1,7 +1,7 @@
 #!/bin/bash
 
 while true; do
-	(printf "start: "; date +%T;
+	(printf "start: "; date "+%D %T";
 	 traceroute google.com;
-	 printf "end: "; date +%T ; printf "\n") >> FT.TXT
+	 printf "end: "; date "+%D %T" ; printf "\n") >> FT2.TXT
 done
