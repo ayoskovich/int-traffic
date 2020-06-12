@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[48]:
+# In[125]:
 
 
 import pandas as pd
@@ -31,20 +31,47 @@ for i, x in enumerate(dat):
     if is_norm(x):
         al.append(clean_dat(x, i))
 
-        
-full = pd.concat(al).explode('times')
-full['times'] = full['times'].astype(float)
-
+full = pd.concat(al).pipe(post_process)
 
 FRONT = ['trace_id', 'start', 'end', 'trace_line']
 clean = full[FRONT + [x for x in full.columns if x not in FRONT]].drop(['trace_entry', 'whereto'], axis=1)
 
-ROUTE_TIMES = clean.drop_duplicates(subset=['trace_id']).apply(lambda x: x['end'] - x['start'], axis=1)
-plt.hist(ROUTE_TIMES / np.timedelta64(1, 's'));
+
+# In[135]:
 
 
-# In[ ]:
+WIDTH = 7
+HEIGHT = 5
+fig, axs = plt.subplots(figsize=(WIDTH, HEIGHT))
+axs.hist(full.drop_duplicates(subset=['trace_id'])['n_seconds'], bins=30);
+axs.set_title('All traceroute times: n = {}'.format(full.trace_id.nunique()));
 
 
+# In[136]:
 
+
+WIDTH = 20
+HEIGHT = 15
+NROWS = 3
+NCOLS = 1
+WINDOW = 15
+
+fig, axs = plt.subplots(figsize=(WIDTH, HEIGHT), nrows=NROWS, ncols=NCOLS)
+axs[0].plot(full['start'], full['n_seconds'], marker ='o');
+axs[0].set_title('Full trace time (raw)');
+axs[0].set_ylabel('Seconds')
+
+axs[1].plot(full['start'], full['n_seconds'].rolling(WINDOW).mean());
+axs[1].set_title('Times (mean over {})'.format(WINDOW));
+
+axs[2].plot(full['start'], full['n_seconds'].rolling(WINDOW).std());
+axs[2].set_title('Times (std over {})'.format(WINDOW));
+
+
+# In[83]:
+
+
+MISSING = '*  *  * '
+pd.set_option('max_rows', 100)
+t = full.query('trace_entry == @MISSING').groupby(['start', 'trace_id']).apply(lambda x: x.shape[0]).reset_index()
 

@@ -10,8 +10,9 @@ def is_norm(tr):
 
 
 def make_dict(x):
-    """ Create a dictionary from a list"""
+    """ Create a dictionary from a list """
     if len(x) > 2: raise Exception('Was only expecting 2 elements')
+
     i = iter(x)
     b = dict(zip(i, i))
     
@@ -23,13 +24,18 @@ def strip_time(time):
     return datetime.strptime(time, "%m/%d/%y %H:%M:%S")
 
 
+def get_secs(start, end):
+    """ Convert time into seconds. """
+    return (end - start) / np.timedelta64(1, 's')
+
+    
 def has_asty(trace_line):
     """ Lines with asterisks need special care. """
     return "*" in trace_line
 
 
 def parse_entry(ent, wuw):
-    """ Parse a traceroute line.
+    """ Parse a single line of a traceroute.
     
     Example of a good one:
         '192.168.1.254 1.225ms 6.106ms 1.608ms'
@@ -52,11 +58,16 @@ def parse_entry(ent, wuw):
 
 
 def clean_dat(dat, i):
-    """ dat = entry in traceroute"""
+    """ Parse the entry of traceroute
+    
+    Params:
+        dat (string): entire entry of traceroute 
+        i (int): ID for traceroute 
+    """
     START = strip_time(dat[0].replace('start: ', ''))
     END = strip_time(dat[18].replace('end: ', ''))
     
-    WHERE_TO = dat[1] # Destination: traceroute to google.com (216.58.194.142) 64 hops max
+    WHERE_TO = dat[1] # 'Destination: traceroute to google.com (216.58.194.142) 64 hops max'
     
     CHUNK = dat[2:18]  # Inner block of the trace
     
@@ -77,4 +88,17 @@ def clean_dat(dat, i):
     cleaned['trace_id'] = i
     
     return cleaned
+
+
+def post_process(df):
+    """ Clean up data types and compute some variables once
+    individual traceroutes are stacked.
+    """
+    df = df.explode('times')
+    
+    df['times'] = df['times'].astype(float)
+    
+    df['n_seconds'] = (df['end'] - df['start']) /  np.timedelta64(1, 's')
+    
+    return df
 

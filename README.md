@@ -13,3 +13,19 @@ Analyzing internet traffic.
     - Is there variability in traceroute hops?
 
 
+---
+
+
+# Dashboards
+
+## Ping
+- Histogram of all pings
+- Autocorrelation (past X)
+- Pings over time (raw, avg, median, std)
+
+## Traceroute
+- Histogram of all times
+- Visualize route somehow?	
+- Distribution of whereto address?
+- Distribution of * records
+
