@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[125]:
+# In[1]:
 
 
 import pandas as pd
@@ -12,6 +12,9 @@ from functools import reduce
 from datetime import datetime
 
 get_ipython().run_line_magic('run', './trace_helps.ipynb')
+
+# Get the last n traceroutes
+N_RECS = 100
 
 pd.set_option('max_colwidth', 1000)
 
@@ -27,7 +30,7 @@ with open('/home/anthony/TRACE_LOG.TXT') as f:
             a = []
 
 al = []
-for i, x in enumerate(dat):
+for i, x in enumerate(dat[-N_RECS:]):
     if is_norm(x):
         al.append(clean_dat(x, i))
 
@@ -37,7 +40,7 @@ FRONT = ['trace_id', 'start', 'end', 'trace_line']
 clean = full[FRONT + [x for x in full.columns if x not in FRONT]].drop(['trace_entry', 'whereto'], axis=1)
 
 
-# In[135]:
+# In[2]:
 
 
 WIDTH = 7
@@ -47,7 +50,7 @@ axs.hist(full.drop_duplicates(subset=['trace_id'])['n_seconds'], bins=30);
 axs.set_title('All traceroute times: n = {}'.format(full.trace_id.nunique()));
 
 
-# In[136]:
+# In[3]:
 
 
 WIDTH = 20
@@ -68,7 +71,7 @@ axs[2].plot(full['start'], full['n_seconds'].rolling(WINDOW).std());
 axs[2].set_title('Times (std over {})'.format(WINDOW));
 
 
-# In[83]:
+# In[4]:
 
 
 MISSING = '*  *  * '

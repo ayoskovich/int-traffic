@@ -15,7 +15,7 @@ pd.set_option('max_colwidth', 1000)
 
 get_ipython().run_line_magic('run', './ping_helps.ipynb')
 
-clean = read_cleaned(1000000)
+clean = read_cleaned(10000)
 autocor = stattools.acf(clean['lat'], fft=False)
 
 clean.set_index('tstamp', inplace=True)
