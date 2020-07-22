@@ -14,7 +14,7 @@ from datetime import datetime
 get_ipython().run_line_magic('run', './trace_helps.ipynb')
 
 # Get the last n traceroutes
-N_RECS = 100
+N_RECS = 1000
 
 pd.set_option('max_colwidth', 1000)
 

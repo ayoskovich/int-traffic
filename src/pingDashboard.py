@@ -38,6 +38,24 @@ axs[2].plot(autocor, marker='o')
 axs[2].set_title('Autocorrelation at lag 1: {:.2f}'.format(autocor[1]));
 
 
+# In[7]:
+
+
+clean.head(1)
+
+
+# In[14]:
+
+
+clean.index.minute
+
+
+# In[9]:
+
+
+clean.columns
+
+
 # In[2]:
 
 
