@@ -11,7 +11,10 @@ def remove_headers(df):
 
 def clean_time(time):
     """ Get to the right of time=, replace whitespace. """
-    return float(re.sub('[\s|m|s]', '', time.split('time=')[1]))
+    try:
+        return float(re.sub('[\s|m|s]', '', time.split('time=')[1]))
+    except:
+        return 999
 
 
 def clean_ts(time):
@@ -36,6 +39,15 @@ def parse_time(df):
 def read_cleaned(n=100):
     return (
         pd.read_fwf('~/PING_LOG.txt', header=None, names=['a', 'b']).tail(n)
+            .pipe(remove_headers)
+            .pipe(parse_time)
+            .drop(labels=['a', 'b'], axis=1)
+    )
+
+
+def read_all():
+    return (
+        pd.read_fwf('~/PING_LOG.txt', header=None, names=['a', 'b'])
             .pipe(remove_headers)
             .pipe(parse_time)
             .drop(labels=['a', 'b'], axis=1)
