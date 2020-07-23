@@ -47,7 +47,7 @@ ax.set_xticks([])
 plt.savefig('/home/anthony/personalSite/content/project/internet-traffic/featured.jpg')
 
 
-# In[4]:
+# In[3]:
 
 
 # See docs for whisker ending point (default 1.5 of iqr)
@@ -66,13 +66,7 @@ plt.ylabel('Ping (milliseconds)');
 plt.rc('font', size=20)
 plt.figure(figsize=(15,8))
 ax = sns.boxplot(x="hour", y="lat", data=above_q, showfliers=False);
-plt.title('Top of distribution.')
+plt.title('Distribution of 75th percentile and above')
 plt.xlabel('Hour');
 plt.ylabel('Ping (milliseconds)');
-
-
-# In[ ]:
-
-
-
 

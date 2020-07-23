@@ -38,7 +38,7 @@ def parse_time(df):
 
 def read_cleaned(n=100):
     return (
-        pd.read_fwf('~/PING_LOG.txt', header=None, names=['a', 'b']).tail(n)
+        pd.read_fwf('data/PING_LOG.txt', header=None, names=['a', 'b']).tail(n)
             .pipe(remove_headers)
             .pipe(parse_time)
             .drop(labels=['a', 'b'], axis=1)
@@ -47,7 +47,7 @@ def read_cleaned(n=100):
 
 def read_all():
     return (
-        pd.read_fwf('~/PING_LOG.txt', header=None, names=['a', 'b'])
+        pd.read_fwf('data/PING_LOG.txt', header=None, names=['a', 'b'])
             .pipe(remove_headers)
             .pipe(parse_time)
             .drop(labels=['a', 'b'], axis=1)
