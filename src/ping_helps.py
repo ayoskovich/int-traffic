@@ -4,6 +4,11 @@
 # In[ ]:
 
 
+def is_above(dat, perc):
+    """ Returns whether value is above percentile. """
+    return dat > np.quantile(dat, perc)
+
+
 def remove_headers(df):
     """ Remove the records when the ping command starts. """
     return df[df['a'].apply(lambda x: x[:4] != 'PING')]
