@@ -7,25 +7,13 @@ Analyzing internet traffic.
 - Does time of day affect it?
 - Does where the traffic is going matter?
 
-# Ideas
-- Timestamp `ping` and `traceroute` 
-  - Merge on time stamp to control for different hops
-    - Is there variability in traceroute hops?
-
-
 ---
 
+# Ping
 
-# Dashboards
+- Seeing most traffic < 100 ms, then another bump at around 6/700
+  - Potential rerouting? (traceroute)
 
-## Ping
-- Histogram of all pings
-- Autocorrelation (past X)
-- Pings over time (raw, avg, median, std)
+# TODO
 
-## Traceroute
-- Histogram of all times
-- Visualize route somehow?	
-- Distribution of whereto address?
-- Distribution of * records
-
+- [ ] Merge in route traffic

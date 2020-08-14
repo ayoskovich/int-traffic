@@ -11,6 +11,7 @@ def draw_split(var, val, perc, dat):
     val: Quantitative variable to plot on yaxis of boxplots
     perc: Percentile to break the axis on
     """
+        
     # Compute is above
     dat['is_above'] = (
         dat
