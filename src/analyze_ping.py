@@ -40,49 +40,38 @@ clean['day'] =  clean['tstamp'].apply(lambda x: x.isoweekday())  # 1 is Monday
 # plt.savefig('/home/anthony/personalSite/content/project/internet-traffic/featured.jpg')
 
 
-# In[3]:
-
-
-draw_split(var='hour', val='lat', perc=.75, dat=clean);
-
-
-# In[4]:
-
-
-draw_split(var='day', val='lat', perc=.75, dat=clean);
-
-
-# In[5]:
-
-
-clean['lat'].value_counts(bins=10)
-
-
-# In[6]:
+# In[62]:
 
 
 clean['dec'] = (
     clean.groupby('hour')['lat']
-    .apply(lambda x: pd.cut(x, bins=np.arange(0, 1100, 100)))
-    .astype('category')
+    #.apply(lambda x: pd.cut(x, bins=np.arange(0, 1100, 100)))
+    .apply(lambda x: pd.cut(x, bins=np.arange(0, 1100, 50)))
+    .astype('interval')
 )
 
-
-# In[7]:
-
-
-t = clean.groupby('hour')['dec'].value_counts(sort=False)
-pd.reset_option('display.max_rows')
-t
+rels = clean.groupby('hour')['dec'].apply(lambda x: x.value_counts(sort=False, normalize=True))
 
 
-# In[9]:
+# In[67]:
 
 
-clean.groupby('hour')['dec'].value_counts(sort=False, normalize=True)
+# https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure
+(
+    rels[rels.index.get_level_values(None) == pd.Interval(0, 50)]
+    .plot(use_index=False,
+          title='Percentage of observations between 0 and 100 ms')
+);
+plt.ylabel('Percentage from 0 - 100');
+plt.xlabel('Hour of the Day');
+plt.xticks(np.arange(24), rels.index.levels[0]);
+plt.ylim((0, 1));
+plt.yticks(np.arange(0, 1, .1));
+plt.gcf().set_figheight(5);
+plt.gcf().set_figwidth(10);
 
 
-# In[8]:
+# In[10]:
 
 
 import math
