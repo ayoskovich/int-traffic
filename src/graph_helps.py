@@ -22,6 +22,6 @@ def bucket_dist(g_var, x_var, all_bins, tar_bin, label, df):
         .value_counts(normalize=True, bins=all_bins)
         [:, tar_bin]
         .to_frame()
-        .assign(lev = label)
+        .assign(Interval = label)
     )
 
