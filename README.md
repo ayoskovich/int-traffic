@@ -1,19 +1,13 @@
 # int-traffic
-Analyzing internet traffic.
-
-# Main Questions
-- How does my internet speed vary over time?
-- Is there a lot of variance? little?
-- Does time of day affect it?
-- Does where the traffic is going matter?
+Code that accompanies a personal project on my website [here](https://anthonyyoskovich.com/project/internet-traffic/). Over the course of a month or so I logged the output from `ping` and `traceroute` to google.com in order to analyze internet traffic.
 
 ---
 
-# Ping
+## About The Files
 
-- Seeing most traffic < 100 ms, then another bump at around 6/700
-  - Potential rerouting? (traceroute)
-
-# TODO
-
-- [ ] 
+- `analyze_ping.ipynb`: Main notebook for analysis
+- `*_helps.ipynb`: Notebooks containing functions and useful code I didn't want inside the main analysis notebook
+- `/src`: Contains jupyter notebooks converted to python code to make diffs way easier to read
+- `/dashboards`: Contains some jupyter notebooks and early exploratory work
+- `/data`: Contains the raw text files created by `ping` and `traceroute`
+- `/logging`: Contains the crontab file I used to schedule the logging, as well as the bash script used to automate `traceroute`
